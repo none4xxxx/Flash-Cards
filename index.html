@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Flashcards</title>
+    <style>
+        /* CSS to match your screenshot */
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 40px; background: #fff; }
+        .app-container { width: 500px; }
+        
+        .progress-section { 
+            display: flex; align-items: center; gap: 10px; 
+            border: 2px solid #e0e0e0; padding: 10px; border-radius: 12px; margin-bottom: 20px;
+        }
+        .bar-bg { flex-grow: 1; height: 20px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: #bdbdbd; width: 25%; transition: 0.3s; }
+
+        .card { border: 2px solid #e0e0e0; border-radius: 20px; overflow: hidden; }
+        .card-body { 
+            height: 250px; display: flex; align-items: center; justify-content: center; 
+            padding: 30px; text-align: center; font-size: 22px; font-weight: bold; background: #fdfdfd;
+        }
+        .card-footer { 
+            display: flex; justify-content: space-between; padding: 15px; 
+            border-top: 2px solid #e0e0e0; background: white;
+        }
+        button { background: none; border: none; cursor: pointer; font-size: 16px; font-weight: 600; color: #444; }
+        button:hover { color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h3>Flash Cards</h3>
+    
+    <div class="progress-section">
+        <div class="bar-bg"><div class="bar-fill" id="fill"></div></div>
+        <span id="percent">25%</span>
+        <span id="counter" style="margin-left:auto">1 of 4</span>
+    </div>
+
+    <div class="card">
+        <div class="card-body" id="display">
+            </div>
+        <div class="card-footer">
+            <button onclick="prev()">‹ Previous</button>
+            <button onclick="toggle()" id="mainBtn">Show Answer</button>
+            <button onclick="next()">Next ›</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Your Data
+    const cards = [
+        { q: "What is the difference between var, let, and const?", a: "In JavaScript, var is function-scoped; let and const are block-scoped. let allows re-assignment, const does not." },
+        { q: "What is an Array?", a: "An array is a special variable, which can hold more than one value at a time." },
+        { q: "What does DOM stand for?", a: "Document Object Model." },
+        { q: "What is a Template Literal?", a: "Strings allowed to span multiple lines, using backticks (`) instead of quotes." }
+    ];
+
+    let index = 0;
+    let showingAnswer = false;
+
+    // 2. The logic to update the screen
+    function render() {
+        const card = cards[index];
+        const display = document.getElementById('display');
+        const mainBtn = document.getElementById('mainBtn');
+        
+        // Update Text
+        display.innerText = showingAnswer ? card.a : card.q;
+        mainBtn.innerText = showingAnswer ? "Hide Answer" : "Show Answer";
+
+        // Update Progress
+        const step = ((index + 1) / cards.length) * 100;
+        document.getElementById('fill').style.width = step + "%";
+        document.getElementById('percent').innerText = Math.round(step) + "%";
+        document.getElementById('counter').innerText = (index + 1) + " of " + cards.length;
+    }
+
+    // 3. Button Actions
+    function toggle() {
+        showingAnswer = !showingAnswer;
+        render();
+    }
+
+    function next() {
+        index = (index + 1) % cards.length;
+        showingAnswer = false;
+        render();
+    }
+
+    function prev() {
+        index = (index - 1 + cards.length) % cards.length;
+        showingAnswer = false;
+        render();
+    }
+
+    // Run once on load
+    render();
+</script>
+
+</body>
+</html>
